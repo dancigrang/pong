@@ -1,25 +1,44 @@
 import pygame, os, sys
 from pygame.locals import *
 
+
 class Ball():
 	def __init__(self):
 		self.rect = pygame.Rect(295,200,10,10)
 		# pygame.draw.rect(background, (250,250,250), (295,200,10,10), 0)
+		self.dx = 2
+		self.dy = 0
 
-	def move(self, dx, dy):
+	def move(self):
 		# print 'update'
-		self.rect.x += dx
-		self.rect.y += dy
+		self.rect.x += self.dx
+		self.rect.y += self.dy
+		
+		
+		if b.rect.colliderect(pl.rect):
+			b.dx = b.dx*-1	
+		if b.rect.colliderect(pr.rect):
+			b.dx = b.dx*-1	
+		
+
 
 class Paddle():
-	def __init__(self):
-		self.rect = pygame.Rect(295,200,100,10)
+	def __init__(self,x,y):
+		self.rect = pygame.Rect(x,y,10,80)
 		# pygame.draw.rect(background, (250,250,250), (295,200,10,10), 0)
 
 	def move(self, dx, dy):
 		# print 'update'
 		self.rect.x += dx
 		self.rect.y += dy
+		
+
+#make dem objects
+b = Ball()
+pl = Paddle(25,200)
+pr = Paddle(575,200)
+
+
 
 def main():
 	pygame.init()
@@ -33,28 +52,43 @@ def main():
 	# screen.blit(background, (0,0))
 	# pygame.display.flip()
 
-	b = Ball()
+	
 	clock = pygame.time.Clock()
+	pygame.key.set_repeat(5,5)
+	
+	def repaint():
+		
+		b.move()
+		screen.blit(background, (0,0))
+		background.fill((0, 0, 0))
+		pygame.draw.rect(background, (250,250,250), b.rect, 0)
+		pygame.draw.rect(background, (250,250,250), pl.rect, 0)
+		pygame.draw.rect(background, (250,250,250), pr.rect, 0)
+		pygame.display.flip()
 
 	while True:
 		clock.tick(60)
+		print b.rect
+		#bouncing off paddles
+		
+		#scoring
+		if b.rect.x < 0 or b.rect.x > 600: 
+			print 'point'
+		
 		for event in pygame.event.get():
 			if event.type == QUIT:
 				return False
 			if event.type == KEYDOWN and event.key == K_ESCAPE:
 				return False
 			if event.type == KEYDOWN and event.key == K_UP:
-				b.move(0,-10)
+				pr.move(0,-5)					
 			if event.type == KEYDOWN and event.key == K_DOWN:
-				b.move(0,10)
-			if event.type == KEYDOWN and event.key == K_LEFT:
-				b.move(-10,0)
-			if event.type == KEYDOWN and event.key == K_RIGHT:
-				b.move(10,0)
-
-		screen.blit(background, (0,0))
-		background.fill((0, 0, 0))
-		pygame.draw.rect(background, (250,250,250), b.rect, 0)
-		pygame.display.flip()
+				pr.move(0,5)					
+			if event.type == KEYDOWN and event.key == K_q:
+				pl.move(0,-5)
+			if event.type == KEYDOWN and event.key == K_a:
+				pl.move(0,5)
+				
+		repaint()
 	
 main()
