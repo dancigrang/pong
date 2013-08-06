@@ -1,40 +1,49 @@
-import pygame, os, sys
+import pygame, os, sys, time
 from pygame.locals import *
 
 
 class Ball():
-	def __init__(self):
+	def __init__(self, x):
 		self.rect = pygame.Rect(295,200,10,10)
-		# pygame.draw.rect(background, (250,250,250), (295,200,10,10), 0)
-		self.dx = 2
-		self.dy = 0
+		self.dx = 2*x
+		self.dy = -5
 
 	def move(self):
 		self.rect.x += self.dx
 		self.rect.y += self.dy
 		
-		
+		# bounce x paddles left paddle
 		if b.rect.colliderect(pl.rect):
 			b.dx = b.dx*-1	
+		# bounce x paddles right paddle
 		if b.rect.colliderect(pr.rect):
 			b.dx = b.dx*-1	
-		
-
+		# bounce y borders bottom
+		if self.rect.y >= 390:
+			b.dy = b.dy * -1
+		# bounce y borders top
+		if self.rect.y <= 0:
+			b.dy = b.dy * -1
 
 class Paddle():
 	def __init__(self,x,y):
-		self.rect = pygame.Rect(x,y,10,80)
-		# pygame.draw.rect(background, (250,250,250), (295,200,10,10), 0)
+		self.rect = pygame.Rect(x,y,10,60)
 
-	def move(self, dx, dy):
-		self.rect.x += dx
-		self.rect.y += dy
+	def move(self, dy):
+		
+		if self.rect.y <= 340 or self.rect.y >= 0:
+			self.rect.y += dy
+			if self.rect.y > 340:
+				self.rect.y = 340
+			elif self.rect.y < 0:
+				self.rect.y = 0
 		
 
 #make dem objects
-b = Ball()
-pl = Paddle(25,200)
-pr = Paddle(575,200)
+b = Ball(1)
+pl = Paddle(10,200)
+pr = Paddle(580,200)
+
 
 
 
@@ -46,10 +55,8 @@ def main():
 	background = pygame.Surface(screen.get_size())
 	background = background.convert()
 	background.fill((0, 0, 0))
-
-	# screen.blit(background, (0,0))
-	# pygame.display.flip()
-
+	pscore1 = 0
+	pscore2 = 0
 	
 	clock = pygame.time.Clock()
 	pygame.key.set_repeat(5,5)
@@ -66,26 +73,42 @@ def main():
 
 	while True:
 		clock.tick(60)
-		print b.rect
+		
 		#bouncing off paddles
 		
-		#scoring
-		if b.rect.x < 0 or b.rect.x > 600: 
-			print 'point'
-		
+		#player 1 scored
+		if b.rect.x > 620:
+			time.sleep(2)
+			b.__init__(-1)
+			pl.__init__(10,200)
+			pr.__init__(580,200)
+			pscore1 += 1
+			print pscore1
+
+		# player 2 scored
+		if b.rect.x < -20:
+			time.sleep(2)
+			b.__init__(1)
+			pl.__init__(10,200)
+			pr.__init__(580,200)
+			pscore2 += 1
+			print pscore2
+
+
 		for event in pygame.event.get():
 			if event.type == QUIT:
 				return False
-			if event.type == KEYDOWN and event.key == K_ESCAPE:
-				return False
-			if event.type == KEYDOWN and event.key == K_UP:
-				pr.move(0,-5)					
-			if event.type == KEYDOWN and event.key == K_DOWN:
-				pr.move(0,5)					
-			if event.type == KEYDOWN and event.key == K_q:
-				pl.move(0,-5)
-			if event.type == KEYDOWN and event.key == K_a:
-				pl.move(0,5)
+			if event.type == KEYDOWN:
+				if event.key == K_ESCAPE:
+					return False
+				if event.key == K_UP:
+					pr.move(-5)					
+				if event.key == K_DOWN:
+					pr.move(5)					
+				if event.key == K_q:
+					pl.move(-5)
+				if event.key == K_a:
+					pl.move(5)
 				
 		repaint()
 	
