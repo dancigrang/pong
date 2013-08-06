@@ -10,7 +10,6 @@ class Ball():
 		self.dy = 0
 
 	def move(self):
-		# print 'update'
 		self.rect.x += self.dx
 		self.rect.y += self.dy
 		
@@ -28,7 +27,6 @@ class Paddle():
 		# pygame.draw.rect(background, (250,250,250), (295,200,10,10), 0)
 
 	def move(self, dx, dy):
-		# print 'update'
 		self.rect.x += dx
 		self.rect.y += dy
 		
