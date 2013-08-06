@@ -1,12 +1,13 @@
-import pygame, os, sys, time
+import pygame, os, sys, time, random
 from pygame.locals import *
 
 
 class Ball():
 	def __init__(self, x):
 		self.rect = pygame.Rect(295,200,10,10)
+
 		self.dx = 2*x
-		self.dy = -5
+		self.dy = random.uniform(-2,2)
 
 	def move(self):
 		self.rect.x += self.dx
@@ -15,15 +16,36 @@ class Ball():
 		# bounce x paddles left paddle
 		if b.rect.colliderect(pl.rect):
 			b.dx = b.dx*-1	
+			self.rect.x += 2
+			self.angle(pl)
 		# bounce x paddles right paddle
 		if b.rect.colliderect(pr.rect):
+			self.rect.x -= 2
 			b.dx = b.dx*-1	
+			self.angle(pr)
+
 		# bounce y borders bottom
 		if self.rect.y >= 390:
 			b.dy = b.dy * -1
+		
 		# bounce y borders top
 		if self.rect.y <= 0:
 			b.dy = b.dy * -1
+
+	def angle(self, r):
+			offset = ((r.rect.y - b.rect.y) + 55)/12
+			if offset >= 5:
+				self.dy = -10
+			elif offset == 4:
+				self.dy = -7.5
+			elif offset == 3:
+				self.dy = 3
+			elif offset ==2:
+				self.dy = 3
+			elif offset == 1:
+				self.dy = 7.5
+			elif offset <= 0:
+				self.dy = 10
 
 class Paddle():
 	def __init__(self,x,y):
@@ -41,8 +63,8 @@ class Paddle():
 
 #make dem objects
 b = Ball(1)
-pl = Paddle(10,200)
-pr = Paddle(580,200)
+pl = Paddle(10,170)
+pr = Paddle(580,170)
 
 
 
@@ -63,9 +85,9 @@ def main():
 	
 	def repaint():
 		
-		b.move()
 		screen.blit(background, (0,0))
 		background.fill((0, 0, 0))
+		b.move()
 		pygame.draw.rect(background, (250,250,250), b.rect, 0)
 		pygame.draw.rect(background, (250,250,250), pl.rect, 0)
 		pygame.draw.rect(background, (250,250,250), pr.rect, 0)
@@ -83,7 +105,7 @@ def main():
 			pl.__init__(10,200)
 			pr.__init__(580,200)
 			pscore1 += 1
-			print pscore1
+			print "Player 1 Score: ", pscore1, " | ", pscore2, " :Player 2 Score"
 
 		# player 2 scored
 		if b.rect.x < -20:
@@ -92,7 +114,7 @@ def main():
 			pl.__init__(10,200)
 			pr.__init__(580,200)
 			pscore2 += 1
-			print pscore2
+			print "Player 1 Score: ", pscore1, " | ", pscore2, " :Player 2 Score"
 
 
 		for event in pygame.event.get():
