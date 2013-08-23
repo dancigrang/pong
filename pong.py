@@ -8,6 +8,7 @@ class Ball():
 
 		self.dx = 2*x
 		self.dy = random.uniform(-2,2)
+		# print self.dy
 
 	def move(self):
 		self.rect.x += self.dx
@@ -35,24 +36,24 @@ class Ball():
 	def angle(self, r):
 			offset = ((r.rect.y - b.rect.y) + 55)/12
 			if offset >= 5:
-				self.dy = -10
+				self.dy = -6
 			elif offset == 4:
-				self.dy = -7.5
+				self.dy = -4
 			elif offset == 3:
-				self.dy = 3
+				self.dy = -2
 			elif offset ==2:
-				self.dy = 3
+				self.dy = 2
 			elif offset == 1:
-				self.dy = 7.5
+				self.dy = 4
 			elif offset <= 0:
-				self.dy = 10
+				self.dy = 6
+
 
 class Paddle():
 	def __init__(self,x,y):
 		self.rect = pygame.Rect(x,y,10,60)
 
 	def move(self, dy):
-		
 		if self.rect.y <= 340 or self.rect.y >= 0:
 			self.rect.y += dy
 			if self.rect.y > 340:
@@ -117,21 +118,26 @@ def main():
 			print "Player 1 Score: ", pscore1, " | ", pscore2, " :Player 2 Score"
 
 
+		keys = pygame.key.get_pressed()
+
+		if keys[K_UP]:
+			pr.move(-5)
+		if keys[K_DOWN]:
+			pr.move(5)
+		if keys[K_q]:
+			pl.move(-5)
+		if keys[K_a]:
+			pl.move(5)
+
 		for event in pygame.event.get():
 			if event.type == QUIT:
 				return False
 			if event.type == KEYDOWN:
 				if event.key == K_ESCAPE:
 					return False
-				if event.key == K_UP:
-					pr.move(-5)					
-				if event.key == K_DOWN:
-					pr.move(5)					
-				if event.key == K_q:
-					pl.move(-5)
-				if event.key == K_a:
-					pl.move(5)
-				
+		if pscore1 == 9 or pscore2 == 9:
+			return False
+
 		repaint()
 	
 main()
